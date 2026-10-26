@@ -12,26 +12,26 @@ CREATE SCHEMA skills_mart;
 
 -- 1. Skills dimension
 CREATE TABLE skills_mart.dim_skill (
-    skill_id        INTEGER PRIMARY KEY,
-    skills          VARCHAR,
-    type            VARCHAR
+    skill_id INTEGER PRIMARY KEY,
+    skills VARCHAR,
+    type VARCHAR
 );
 
 INSERT INTO skills_mart.dim_skill (skill_id, skills, type)
 SELECT
     skill_id,
-    skill AS skills,
+    skills,
     type
 FROM skills_dim;
 
 -- 2. Month-level date dimension (enhanced with quarter and other attributes)
 CREATE TABLE skills_mart.dim_date_month (
     month_start_date DATE PRIMARY KEY,
-    year            INTEGER,
-    month           INTEGER,
-    quarter         INTEGER,
-    quarter_name    VARCHAR,
-    year_quarter    VARCHAR
+    year INTEGER,
+    month INTEGER,
+    quarter INTEGER,
+    quarter_name VARCHAR,
+    year_quarter VARCHAR
 );
 
 INSERT INTO skills_mart.dim_date_month (
@@ -59,13 +59,13 @@ WHERE job_posted_date IS NOT NULL;
 -- Grain: skill_id + month_start_date + job_title_short
 -- All measures are additive (counts and sums) - safe to re-aggregate
 CREATE TABLE skills_mart.fact_skill_demand_monthly (
-    skill_id                        INTEGER,
-    month_start_date                DATE,
-    job_title_short                 VARCHAR,
-    postings_count                  INTEGER,
-    remote_postings_count           INTEGER,
+    skill_id INTEGER,
+    month_start_date DATE,
+    job_title_short VARCHAR,
+    postings_count INTEGER,
+    remote_postings_count INTEGER,
     health_insurance_postings_count INTEGER,
-    no_degree_mention_count         INTEGER,
+    no_degree_mention_count INTEGER,
     PRIMARY KEY (skill_id, month_start_date, job_title_short),
     FOREIGN KEY (skill_id) REFERENCES skills_mart.dim_skill(skill_id),
     FOREIGN KEY (month_start_date) REFERENCES skills_mart.dim_date_month(month_start_date)
@@ -108,7 +108,7 @@ SELECT
     -- Remote / benefits / degree flags (additive counts)
     SUM(is_remote) AS remote_postings_count,
     SUM(has_health_insurance) AS health_insurance_postings_count,
-    SUM(no_degree_mention) AS no_degree_mention_postings_count
+    SUM(no_degree_mention) AS no_degree_mention_count
 FROM
     job_postings_prepared
 GROUP BY

@@ -1,8 +1,6 @@
--- Step 6: Mart - Update priority roles mart
+-- Step 6: Mart - Update priority roles mart (incremental update)
 -- Run this after Step 5
 -- This script demonstrates MERGE operations for incremental updates to the priority mart
-
-SELECT '=== Updating Roles for Priority Mart ===' AS info;
 
 -- Step 1: Update existing priority role
 -- Update Data Engineer priority level to 1
@@ -13,9 +11,7 @@ WHERE role_name = 'Data Engineer';
 -- Step 2: Insert new priority role
 -- Add Data Scientist as a new priority role with level 2
 INSERT INTO priority_mart.priority_roles (role_id, role_name, priority_lvl)
-VALUES (4, 'Data Scientist', 3);
-
-SELECT * FROM priority_mart.priority_roles;
+VALUES (4, 'Data Scientist', 2);
 
 -- Step 3: Create temporary source table
 -- This table contains the current state of priority jobs from the data warehouse
@@ -29,16 +25,11 @@ SELECT
   r.priority_lvl,
   CURRENT_TIMESTAMP AS updated_at
 FROM
-    job_postings_fact AS jpf                          
-    -- updated to use main schema
-LEFT JOIN company_dim AS cd                           
-    -- updated to use main schema
+    job_postings_fact AS jpf                          -- updated to use main schema
+LEFT JOIN company_dim AS cd                           -- updated to use main schema
     ON jpf.company_id = cd.company_id
-INNER JOIN priority_mart.priority_roles AS r               
-    -- updated to use priority_mart schema
+INNER JOIN priority_mart.priority_roles AS r               -- updated to use priority_mart schema
     ON jpf.job_title_short = r.role_name;
-
-SELECT '=== Batch Updating priority_jobs_snapshot ===' AS info;
 
 -- Step 4: MERGE operation to update snapshot
 -- This MERGE statement handles:
@@ -91,8 +82,6 @@ SELECT
     COUNT(*) AS job_count,
     MIN(priority_lvl) AS priority_lvl,
     MIN(updated_at) AS updated_at
-FROM priority_mart.priority_jobs_snapshot         
-     -- updated to use priority_mart schema
+FROM priority_mart.priority_jobs_snapshot          -- updated to use priority_mart schema
 GROUP BY job_title_short
 ORDER BY job_count DESC;
-
