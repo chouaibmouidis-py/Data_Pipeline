@@ -170,13 +170,31 @@ You can run the entire pipeline end-to-end directly using DuckDB CLI:
 duckdb analytics_dw.duckdb -f build_dw_marts.sql
 ```
 
+**Option A: Exécution locale**
+```bash
+duckdb dw_marts.duckdb -c ".read build_dw_marts.sql"
+```
+**Option B: Déploiement Cloud Serverless (MotherDuck)**
+
+```bash
+export MOTHERDUCK_TOKEN="ton_token_ici"
+duckdb "md:dw_marts" -c ".read build_dw_marts.sql"
+```
+
+
+
 **Verify the Results:**
 Open the DuckDB database and inspect generated marts:
-```bash
+
 -- Launch interactive CLI
+
+```bash
 duckdb analytics_dw.duckdb
+```
+
 
 -- Preview top skills from the aggregate mart
+```bash
 SELECT * FROM skills_mart.skill_demand_monthly
 ORDER BY demand_count DESC LIMIT 10;
 ```
