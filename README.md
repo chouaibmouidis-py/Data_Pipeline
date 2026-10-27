@@ -160,7 +160,7 @@ Company hiring trends by role, location, and month.
 
 **1. Clone the repository:**
 ```bash
-git clone https://github.com/<your-username>/data-warehouse-etl-duckdb.git
+git clone https://github.com/chouaibmouidis-py/data-warehouse-etl-duckdb.git
 cd data-warehouse-etl-duckdb/2_WH_Mart_Build
 ```
 
