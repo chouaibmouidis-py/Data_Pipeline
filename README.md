@@ -177,7 +177,7 @@ duckdb dw_marts.duckdb -c ".read build_dw_marts.sql"
 **Option B: Déploiement Cloud Serverless (MotherDuck)**
 
 ```bash
-export MOTHERDUCK_TOKEN="ton_token_ici"
+export MOTHERDUCK_TOKEN="your_token"
 duckdb "md:dw_marts" -c ".read build_dw_marts.sql"
 ```
 
